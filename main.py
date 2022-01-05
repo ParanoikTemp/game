@@ -1,16 +1,42 @@
-# This is a sample Python script.
+import pygame
+import sys
+import map_generator
+from maps import start_map
+from player import Player
+pygame.init()
+screen = pygame.display.set_mode((64 * 30, 64 * 16))
+clock = pygame.time.Clock()
+sprites = pygame.sprite.Group()
+sdvigx = 64
+sdvigy = 64 * -3
+player = Player(sprites, 64 * 14 + sdvigx, 64 * 8 + sdvigy)
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+level1 = map_generator.map_generator(screen, start_map.layers, start_map.barrier)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def stop_game():
+    pygame.quit()
+    sys.exit()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+while True:
+    clock.tick(60)
+    screen.fill('black')
+    keyboard = pygame.key.get_pressed()
+    barriers = level1.draw(sdvigx, sdvigy)
+    sprites.draw(screen)
+    player.move(barriers)
+    if keyboard[pygame.K_RIGHT]:
+        sdvigx -= 10
+        player.sdvig(-10, 0)
+    if keyboard[pygame.K_LEFT]:
+        sdvigx += 10
+        player.sdvig(10, 0)
+    if keyboard[pygame.K_UP]:
+        sdvigy += 10
+        player.sdvig(0, 10)
+    if keyboard[pygame.K_DOWN]:
+        sdvigy -= 10
+        player.sdvig(0, -10)
+    pygame.display.flip()
+    [stop_game() for event in pygame.event.get() if event.type == pygame.QUIT]
