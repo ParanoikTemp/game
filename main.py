@@ -9,7 +9,8 @@ clock = pygame.time.Clock()
 sprites = pygame.sprite.Group()
 sdvigx = 64
 sdvigy = 64 * -3
-player = Player(sprites, 64 * 14 + sdvigx, 64 * 8 + sdvigy)
+player = Player(sprites, 64 * 14 + sdvigx, 64 * 8 + sdvigy, 6)
+cadr = 0
 
 level1 = map_generator.map_generator(screen, start_map.layers, start_map.barrier)
 
@@ -25,7 +26,9 @@ while True:
     keyboard = pygame.key.get_pressed()
     barriers = level1.draw(sdvigx, sdvigy)
     sprites.draw(screen)
-    player.move(barriers)
+    sx, sy = player.move(barriers, cadr)
+    sdvigx += sx
+    sdvigy += sy
     if keyboard[pygame.K_RIGHT]:
         sdvigx -= 10
         player.sdvig(-10, 0)
@@ -39,4 +42,6 @@ while True:
         sdvigy -= 10
         player.sdvig(0, -10)
     pygame.display.flip()
+    cadr += 1
+    cadr %= 60
     [stop_game() for event in pygame.event.get() if event.type == pygame.QUIT]
