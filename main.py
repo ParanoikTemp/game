@@ -11,6 +11,7 @@ sprites = pygame.sprite.Group()
 sdvigx, sdvigy = start_map.sdvigx, start_map.sdvigy
 player = Player(sprites, start_map.player_pos[0] + sdvigx, start_map.player_pos[1] + sdvigy, 7)
 cadr = 0
+# жеваный крот
 
 level1 = map_generator.map_generator(screen, start_map.layers, start_map.barrier)
 
