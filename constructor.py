@@ -3,19 +3,18 @@ import sys
 import map_generator
 import string
 import time
-from maps import start_map
 
 pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
-map1 = map_generator.map_generator(screen, start_map.layers)
-layers = start_map.layers
-barrier = start_map.barrier
+layers = [[]]
+barrier = []
 layer = 0
 block = '.'
 clock = pygame.time.Clock()
 bar_vis = True
 map3 = map_generator.map_generator(screen, layers)
 sdvigx = sdvigy = 0
+player_pos = [32, 32]
 tiles_names = {'0': 'Черный блок', 'a': 'Натертость на дороге верхний левый угол',
                'b': "Натертость на дороге верх лево", 'c': "Натертость на дорого верх право",
                'd': "Натертость на дороге верхний правый угол", 'e': "Натертость на дороге центр левый бок",
@@ -35,10 +34,11 @@ def stop_game():
 
 create_map_flag = True
 create_barrier = False
+create_player = False
 
 
 def create_map():
-    global layer, layers, block, map3, sdvigx, sdvigy, tiles_names, bar_vis
+    global layer, layers, block, map3, sdvigx, sdvigy, tiles_names, bar_vis, player_pos
     tiles = {'0': 0, 'a': 97, 'b': 98, 'c': 99, 'd': 100, 'e': 113, 'f': 114, 'g': 115, 'h': 116, 'i': 129,
              'j': 130, 'k': 131, 'l': 132, 'm': 17, 'n': 18, 'o': 19, 'p': 1, 'r': 2, 's': 3, 't': 117, 'q': 101,
              'u': 51, 'v': 50}
@@ -81,7 +81,17 @@ def create_map():
     if mouse[0] and 0 < x < 64 * 30 and 0 < y < 64 * 16:
         bx, by = (x - sdvigx) // 64, (y - sdvigy) // 64
         print(bx, by)
-        if not create_barrier:
+        if create_barrier:
+            while len(barrier) < by + 1:
+                barrier.append('.' * 31)
+            barrier[by] = barrier[by].ljust(bx + 1, '.')
+            blocks = list(barrier[by])
+            blocks[bx] = 'z'
+            barrier[by] = ''.join(blocks)
+            pygame.display.set_caption(f'Выбран блок: {"Барьер"}.')
+        elif create_player:
+            player_pos = [bx * 64 + 32, by * 64 + 32]
+        else:
             while len(layers[layer]) < by + 1:
                 layers[layer].append('.' * 31)
             layers[layer][by] = layers[layer][by].ljust(bx + 1, '.')
@@ -90,14 +100,6 @@ def create_map():
             layers[layer][by] = ''.join(blocks)
             pygame.display.set_caption(f'Выбран блок: {tiles_names[block]} ({block}). Слоев: {len(layers)}.'
                                        f' Выбран слой: {layer + 1}')
-        else:
-            while len(barrier) < by + 1:
-                barrier.append('.' * 31)
-            barrier[by] = barrier[by].ljust(bx + 1, '.')
-            blocks = list(barrier[by])
-            blocks[bx] = 'z'
-            barrier[by] = ''.join(blocks)
-            pygame.display.set_caption(f'Выбран блок: {"Барьер"}.')
     if mouse[2] and 0 < x < 64 * 30 and 0 < y < 64 * 16:
         bx, by = (x - sdvigx) // 64, (y - sdvigy) // 64
         if not create_barrier:
@@ -133,21 +135,31 @@ while flag:
                 if block == 'z':
                     pygame.display.set_caption('Выбран блок: Барьер.')
                     create_barrier = not create_barrier
+                if block == 'x':
+                    pygame.display.set_caption('Выбран игрок')
+                    create_player = not create_player
                 else:
-                    pygame.display.set_caption(f'Выбран блок: {tiles_names[block]} ({block}). Слоев: {len(layers)}.'
-                                               f' Выбран слой: {layer + 1}')
+                    if tiles_names.get(block):
+                        create_player = create_barrier = False
+                        pygame.display.set_caption(f'Выбран блок: {tiles_names[block]} ({block}). Слоев: {len(layers)}.'
+                                                   f' Выбран слой: {layer + 1}')
         if event.type == pygame.QUIT:
             flag = False
     if create_map_flag:
         create_map()
         map3.draw(sdvigx, sdvigy, bar_vis)
+    pygame.draw.circle(screen, 'red', (player_pos[0] + sdvigx, player_pos[1] + sdvigy), 32)
     pygame.display.flip()
 
 pygame.quit()
 print('layers =', layers)
 print('barrier =', barrier)
+print(f'sdvigx, sdvigy = {sdvigx}, {sdvigy}')
+print(f'player_pos = ({player_pos[0]}, {player_pos[1]})')
 if f_name := input('Сохранить карту: '):
     with open('maps/' + f_name + '.py', 'w') as f:
         f.write('layers = ' + str(layers) + '\n')
-        f.write('barrier = ' + str(barrier))
+        f.write('barrier = ' + str(barrier) + '\n')
+        f.write(f'sdvigx, sdvigy = {sdvigx}, {sdvigy}' + '\n')
+        f.write(f'player_pos = ({player_pos[0]}, {player_pos[1]})')
 stop_game()

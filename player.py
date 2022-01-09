@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         sdvigx, sdvigy = 0, 0
         animate = False
         if keyboard[pygame.K_w]:
+            animate = True
             if self.rect.y < 64 * 3:
                 sdvigy += self.velocity
                 self.rect.y -= self.velocity
@@ -30,8 +31,8 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y -= self.velocity
                 if pygame.sprite.spritecollide(self, barrier, True):
                     self.rect.y += self.velocity
-            animate = True
         if keyboard[pygame.K_s]:
+            animate = True
             if self.rect.y > 64 * 13:
                 sdvigy -= self.velocity
                 self.rect.y += self.velocity
@@ -42,8 +43,8 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += self.velocity
                 if pygame.sprite.spritecollide(self, barrier, True):
                     self.rect.y -= self.velocity
-            animate = True
         if keyboard[pygame.K_d]:
+            animate = True
             if self.rect.x > 64 * 20:
                 sdvigx -= self.velocity
                 self.rect.x += self.velocity
@@ -54,11 +55,11 @@ class Player(pygame.sprite.Sprite):
                 self.rect.x += self.velocity
                 if pygame.sprite.spritecollide(self, barrier, True):
                     self.rect.x -= self.velocity
-                if self.rot == 'left':
-                    self.image = pygame.transform.flip(self.image, True, False)
-                    self.rot = 'right'
-            animate = True
+            if self.rot == 'left':
+                self.image = pygame.transform.flip(self.image, True, False)
+                self.rot = 'right'
         if keyboard[pygame.K_a]:
+            animate = True
             if self.rect.x < 64 * 10:
                 sdvigx += self.velocity
                 self.rect.x -= self.velocity
@@ -69,10 +70,9 @@ class Player(pygame.sprite.Sprite):
                 self.rect.x -= self.velocity
                 if pygame.sprite.spritecollide(self, barrier, True):
                     self.rect.x += self.velocity
-                if self.rot == 'right':
-                    self.image = pygame.transform.flip(self.image, True, False)
-                    self.rot = 'left'
-            animate = True
+            if self.rot == 'right':
+                self.image = pygame.transform.flip(self.image, True, False)
+                self.rot = 'left'
         if animate:
             self.image = self.images[((cadr // 10) % 2) + 1]
             self.image = pygame.transform.scale(self.image, (50, 64))

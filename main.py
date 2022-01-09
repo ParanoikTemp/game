@@ -1,4 +1,5 @@
 import pygame
+import pygame_widgets
 import sys
 import map_generator
 from maps import start_map
@@ -7,9 +8,8 @@ pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
 clock = pygame.time.Clock()
 sprites = pygame.sprite.Group()
-sdvigx = 64
-sdvigy = 64 * -3
-player = Player(sprites, 64 * 14 + sdvigx, 64 * 8 + sdvigy, 6)
+sdvigx, sdvigy = start_map.sdvigx, start_map.sdvigy
+player = Player(sprites, start_map.player_pos[0] + sdvigx, start_map.player_pos[1] + sdvigy, 7)
 cadr = 0
 
 level1 = map_generator.map_generator(screen, start_map.layers, start_map.barrier)
