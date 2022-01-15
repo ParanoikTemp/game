@@ -14,11 +14,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
         self.velocity = velocity
         self.rot = 'right'
+        self.type = 'player'
 
     def move(self, barrier, cadr):
         keyboard = pygame.key.get_pressed()
         sdvigx, sdvigy = 0, 0
         animate = False
+
         if keyboard[pygame.K_w]:
             animate = True
             if self.rect.y < 64 * 3:
@@ -86,3 +88,7 @@ class Player(pygame.sprite.Sprite):
     def sdvig(self, sdvigx, sdvigy):
         self.rect.x += sdvigx
         self.rect.y += sdvigy
+
+    def add_speed(self, vel):
+        self.velocity *= vel
+        self.velocity = int(self.velocity)
