@@ -12,7 +12,9 @@ class Chest(pygame.sprite.Sprite):
         self.rect.y = y
         self.type = 'potion'
 
-    def event(self, sprites):
+    def update(self, sprites, sx, sy, *x):
+        self.rect.x += sx
+        self.rect.y += sy
         keyboard = pygame.key.get_pressed()
         if keyboard[pygame.K_e]:
             spr = pygame.sprite.spritecollide(self, sprites, False)
@@ -35,8 +37,10 @@ class Potion(pygame.sprite.Sprite):
         self.rect.y = y
         self.type = 'potion'
 
-    def event(self, sprites, player):
+    def update(self, sprites, sx, sy, player, *k):
         keyboard = pygame.key.get_pressed()
+        self.rect.x += sx
+        self.rect.y += sy
         if keyboard[pygame.K_e]:
             spr = pygame.sprite.spritecollide(self, sprites, False)
             for i in spr:
@@ -45,6 +49,3 @@ class Potion(pygame.sprite.Sprite):
                     player.add_speed(1.5)
                     self.kill()
 
-    def sdvig(self, sdvigx, sdvigy):
-        self.rect.x += sdvigx
-        self.rect.y += sdvigy
