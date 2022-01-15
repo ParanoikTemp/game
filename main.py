@@ -5,6 +5,7 @@ import map_generator
 from maps import start_map
 from player import Player
 from StaticObject import Chest, Potion
+from weapon import Weapon
 
 pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
@@ -14,6 +15,7 @@ sdvigx, sdvigy = start_map.sdvigx, start_map.sdvigy
 chest = Chest(sprites, 500, 500)
 potion = Potion(sprites, 500, 540)
 player = Player(sprites, start_map.player_pos[0] + sdvigx, start_map.player_pos[1] + sdvigy, 7)
+weapon = Weapon(sprites, start_map.player_pos[0] + sdvigx, start_map.player_pos[1] + sdvigy)
 cadr = 0
 # жеваный крот
 
@@ -38,6 +40,7 @@ while True:
     potion.event(sprites, player)
     sdvigx += sx
     sdvigy += sy
+    weapon.sword(player.rect.x, player.rect.y, player.rot)
     if keyboard[pygame.K_RIGHT]:
         sdvigx -= 10
         player.sdvig(-10, 0)
