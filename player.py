@@ -15,11 +15,28 @@ class Player(pygame.sprite.Sprite):
         self.velocity = velocity
         self.rot = 'right'
         self.type = 'player'
+        self.health = 5
+        self.cadr = 0
+        self.immortal = False
 
-    def move(self, barrier, cadr):
+    def move(self, barrier, cadr, group):
         keyboard = pygame.key.get_pressed()
         sdvigx, sdvigy = 0, 0
         animate = False
+        if not self.immortal:
+            for spr in pygame.sprite.spritecollide(self, group, False):
+                if spr.type == 'firebullet':
+                    self.immortal = True
+                    self.cadr = 0
+                    self.health -= 1
+                    print(self.health)
+                    spr.kill()
+                    break
+        else:
+            self.cadr += 1
+            if self.cadr == 60:
+                self.cadr = 0
+                self.immortal = False
 
         if keyboard[pygame.K_w]:
             animate = True

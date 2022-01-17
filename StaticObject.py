@@ -10,17 +10,20 @@ class Chest(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.type = 'potion'
+        self.type = 'chest'
+        self.isopen = True
 
     def update(self, sprites, sx, sy, *x):
         self.rect.x += sx
         self.rect.y += sy
         keyboard = pygame.key.get_pressed()
-        if keyboard[pygame.K_e]:
+        if self.isopen and keyboard[pygame.K_e]:
             spr = pygame.sprite.spritecollide(self, sprites, False)
             for i in spr:
                 if i.type == 'player':
                     self.image = pygame.transform.scale(self.images[1], (48, 48))
+                    Potion(sprites, self.rect.x, self.rect.y + 60)
+                    self.isopen = False
 
     def sdvig(self, sdvigx, sdvigy):
         self.rect.x += sdvigx
@@ -48,4 +51,3 @@ class Potion(pygame.sprite.Sprite):
                     self.image = pygame.transform.scale(self.image, (48, 48))
                     player.add_speed(1.5)
                     self.kill()
-

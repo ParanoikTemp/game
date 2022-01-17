@@ -26,27 +26,28 @@ class FireDude(pygame.sprite.Sprite):
             self.rect.x += sx
             self.rect.y += sy
         px, py = pc
-        if abs(rast(self.rect.x, self.rect.y, px, py)) < 200:
-            k = rast(self.rect.x, self.rect.y, px, py) / self.velocity
-            a = (self.rect.x - px) / k
-            self.rect.x += a
-            if pygame.sprite.spritecollideany(self, barrier, None):
-                self.rect.x -= a * 2
-            b = (self.rect.y - py) / k
-            self.rect.y += b
-            if pygame.sprite.spritecollideany(self, barrier, None):
-                self.rect.y -= b * 2
-        elif abs(rast(self.rect.x, self.rect.y, px, py)) > 300:
-            k = rast(self.rect.x, self.rect.y, px, py) / self.velocity
-            a = (self.rect.x - px) / k
-            self.rect.x -= a
-            if pygame.sprite.spritecollideany(self, barrier, None):
+        if abs(rast(self.rect.x, self.rect.y, px, py)) < 600:
+            if abs(rast(self.rect.x, self.rect.y, px, py)) < 200:
+                k = rast(self.rect.x, self.rect.y, px, py) / self.velocity
+                a = (self.rect.x - px) / k
+                self.rect.x += a
+                if pygame.sprite.spritecollideany(self, barrier, None):
+                    self.rect.x -= a * 2
+                b = (self.rect.y - py) / k
+                self.rect.y += b
+                if pygame.sprite.spritecollideany(self, barrier, None):
+                    self.rect.y -= b * 2
+            elif abs(rast(self.rect.x, self.rect.y, px, py)) > 300:
+                k = rast(self.rect.x, self.rect.y, px, py) / self.velocity
+                a = (self.rect.x - px) / k
                 self.rect.x -= a
-            b = (self.rect.y - py) / k
-            self.rect.y -= b
-            if pygame.sprite.spritecollideany(self, barrier, None):
+                if pygame.sprite.spritecollideany(self, barrier, None):
+                    self.rect.x += a * 2
+                b = (self.rect.y - py) / k
                 self.rect.y -= b
-        self.attack(enemies)
+                if pygame.sprite.spritecollideany(self, barrier, None):
+                    self.rect.y += b * 2
+            self.attack(enemies)
 
     def attack(self, enemies):
         if self.cadr == 239:

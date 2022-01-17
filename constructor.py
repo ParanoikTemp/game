@@ -116,7 +116,7 @@ def create_map():
             blocks = list(barrier[by])
             blocks[bx] = '.'
             barrier[by] = ''.join(blocks)
-    map3 = map_generator.map_generator(screen, layers, barrier)
+    map3 = map_generator.map_generator(screen, layers, barrier, create_barrier)
 
 
 flag = True
@@ -130,14 +130,15 @@ while flag:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if create_map_flag and event.unicode in string.ascii_lowercase and event.unicode:
-                block = str(event.unicode)
-                print('!', block)
-                if block == 'z':
+                if str(event.unicode) == 'z':
                     pygame.display.set_caption('Выбран блок: Барьер.')
                     create_barrier = not create_barrier
-                if block == 'x':
+                elif str(event.unicode) == 'x':
                     pygame.display.set_caption('Выбран игрок')
                     create_player = not create_player
+                elif str(event.unicode) in tiles_names.keys():
+                    block = str(event.unicode)
+                    print('!', block)
                 else:
                     if tiles_names.get(block):
                         create_player = create_barrier = False
@@ -147,7 +148,7 @@ while flag:
             flag = False
     if create_map_flag:
         create_map()
-        map3.draw(sdvigx, sdvigy, bar_vis)
+        map3.draw(sdvigx, sdvigy)
     pygame.draw.circle(screen, 'red', (player_pos[0] + sdvigx, player_pos[1] + sdvigy), 32)
     pygame.display.flip()
 

@@ -10,7 +10,6 @@ from StaticObject import Chest, Potion
 pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
 clock = pygame.time.Clock()
-sprites = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 objects = pygame.sprite.Group()
 
@@ -21,8 +20,7 @@ level1 = map_generator.map_generator(screen, fight_map.layers, fight_map.barrier
 cadr = 0
 
 chest = Chest(objects, 500, 500)
-potion = Potion(objects, 500, 540)
-player = Player(sprites, fight_map.player_pos[0] + sdvigx, fight_map.player_pos[1] + sdvigy, 7)
+player = Player(objects, fight_map.player_pos[0] + sdvigx, fight_map.player_pos[1] + sdvigy, 7)
 dude = fire_dude.FireDude(enemies, 1000, 500)
 
 
@@ -36,7 +34,7 @@ while True:
     screen.fill('black')
     keyboard = pygame.key.get_pressed()
     barriers = level1.draw(sdvigx, sdvigy)
-    sx, sy, cords = player.move(barriers, cadr)
+    sx, sy, cords = player.move(barriers, cadr, enemies)
     sdvigx += sx
     sdvigy += sy
     # pygame.draw.line(screen, (255, 0, 0), player.get_cords(), dude.get_cords(), 3)
@@ -61,10 +59,9 @@ while True:
     for enemy in enemies:
         enemy.update(cords, barriers, sx, sy, enemies)
     for obj in objects:
-        obj.update(sprites, sx, sy, player)
+        obj.update(objects, sx, sy, player)
     enemies.draw(screen)
     objects.draw(screen)
-    sprites.draw(screen)
     pygame.display.flip()
     cadr += 1
     cadr %= 60
