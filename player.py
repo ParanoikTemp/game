@@ -14,46 +14,48 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
         self.velocity = velocity
         self.rot = 'right'
+        self.type = 'player'
 
     def move(self, barrier, cadr):
         keyboard = pygame.key.get_pressed()
         sdvigx, sdvigy = 0, 0
         animate = False
+
         if keyboard[pygame.K_w]:
             animate = True
             if self.rect.y < 64 * 3:
                 sdvigy += self.velocity
                 self.rect.y -= self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     sdvigy -= self.velocity
                 self.rect.y += self.velocity
             else:
                 self.rect.y -= self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     self.rect.y += self.velocity
         if keyboard[pygame.K_s]:
             animate = True
             if self.rect.y > 64 * 13:
                 sdvigy -= self.velocity
                 self.rect.y += self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     sdvigy += self.velocity
                 self.rect.y -= self.velocity
             else:
                 self.rect.y += self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     self.rect.y -= self.velocity
         if keyboard[pygame.K_d]:
             animate = True
             if self.rect.x > 64 * 20:
                 sdvigx -= self.velocity
                 self.rect.x += self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     sdvigx += self.velocity
                 self.rect.x -= self.velocity
             else:
                 self.rect.x += self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     self.rect.x -= self.velocity
             if self.rot == 'left':
                 self.image = pygame.transform.flip(self.image, True, False)
@@ -63,12 +65,12 @@ class Player(pygame.sprite.Sprite):
             if self.rect.x < 64 * 10:
                 sdvigx += self.velocity
                 self.rect.x -= self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     sdvigx -= self.velocity
                 self.rect.x += self.velocity
             else:
                 self.rect.x -= self.velocity
-                if pygame.sprite.spritecollide(self, barrier, True):
+                if pygame.sprite.spritecollideany(self, barrier, None):
                     self.rect.x += self.velocity
             if self.rot == 'right':
                 self.image = pygame.transform.flip(self.image, True, False)
@@ -80,9 +82,18 @@ class Player(pygame.sprite.Sprite):
                 self.image = pygame.transform.flip(self.image, True, False)
         else:
             self.image = self.images[0]
+            if self.rot == 'left':
+                self.image = pygame.transform.flip(self.image, True, False)
             self.image = pygame.transform.scale(self.image, (50, 64))
-        return sdvigx, sdvigy
+        return sdvigx, sdvigy, (self.rect.x, self.rect.y)
 
     def sdvig(self, sdvigx, sdvigy):
         self.rect.x += sdvigx
         self.rect.y += sdvigy
+
+    def get_cords(self):
+        return self.rect.x, self.rect.y
+
+    def add_speed(self, vel):
+        self.velocity *= vel
+        self.velocity = int(self.velocity)
