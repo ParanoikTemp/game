@@ -1,10 +1,15 @@
 import pygame
+
 pygame.init()
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, group, num, x, y, draw_barriers=False):
+    def __init__(self, group, num, x, sx, y, sy, draw_barriers=False):
         super().__init__(group)
+        self.sx = sx
+        self.sy = sy
+        self.x = x
+        self.y = y
         if num:
             if num == 999:
                 if draw_barriers:
@@ -24,19 +29,22 @@ class Tile(pygame.sprite.Sprite):
         else:
             image = pygame.surface.Surface((64, 64))
             image.fill('black')
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x + sx
+        self.rect.y = y + sy
+
+    def sdvig(self, sx, sy):
+        self.rect.x = self.x + sx
+        self.rect.y = self.y + sy
 
 
 class map_generator:
-    def __init__(self, screen, map, barrier=None):
+    def __init__(self, screen, map, barrier=None, draw_barriers=False):
+        self.tiles_list = pygame.sprite.Group()
+        self.barrier_list = pygame.sprite.Group()
         self.map = map
         self.screen = screen
         self.barrier = barrier
-
-    def draw(self, sdvigx=0, sdvigy=0, draw_barriers=False):
-        tiles_list = pygame.sprite.Group()
-        barrier_list = pygame.sprite.Group()
+        self.sdvigx, self.sdvigy = 0, 0
         tiles = {'0': 0, 'a': 97, 'b': 98, 'c': 99, 'd': 100, 'e': 113, 'f': 114, 'g': 115, 'h': 116, 'i': 129,
                  'j': 130, 'k': 131, 'l': 132, 'm': 17, 'n': 18, 'o': 19, 'p': 1, 'r': 2, 's': 3, 't': 117, 'q': 101,
                  'u': 51, 'v': 50, 'z': 999}
@@ -48,12 +56,21 @@ class map_generator:
             for y, layer_y in enumerate(layer):
                 for x, color in enumerate(layer_y):
                     if color != '.':
-                        Tile(tiles_list, tiles[color], x * 64 + sdvigx, y * 64 + sdvigy)
+                        Tile(self.tiles_list, tiles[color], x * 64, self.sdvigx, y * 64, self.sdvigy)
         if self.barrier:
             for y, layer_y in enumerate(self.barrier):
                 for x, color in enumerate(layer_y):
                     if color != '.':
-                        Tile(barrier_list, tiles[color], x * 64 + sdvigx, y * 64 + sdvigy, draw_barriers)
-        tiles_list.draw(self.screen)
-        barrier_list.draw(self.screen)
-        return barrier_list
+                        Tile(self.barrier_list, tiles[color], x * 64, self.sdvigx, y * 64, self.sdvigy, draw_barriers)
+
+    def draw(self, sdvigx=0, sdvigy=0):
+        if sdvigx != self.sdvigx or sdvigy != self.sdvigy:
+            self.sdvigx = sdvigx
+            self.sdvigy = sdvigy
+        for tile in self.tiles_list:
+            tile.sdvig(sdvigx, sdvigy)
+        for tile in self.barrier_list:
+            tile.sdvig(sdvigx, sdvigy)
+        self.tiles_list.draw(self.screen)
+        self.barrier_list.draw(self.screen)
+        return self.barrier_list
