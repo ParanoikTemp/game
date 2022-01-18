@@ -18,15 +18,32 @@ class FireDude(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.velocity = 4
         self.cadr = 0
+        self.cadr2 = 0
         self.type = 'firedude'
+        self.immortal = False
+        self.health = 3
 
-    def update(self, pc, barrier, sx, sy, enemies):
+    def update(self, pc, barrier, sx, sy, player, enemies):
         self.cadr += 1
         if sx or sy:
             self.rect.x += sx
             self.rect.y += sy
         px, py = pc
-        if abs(rast(self.rect.x, self.rect.y, px, py)) < 600:
+        if not self.immortal:
+            for spr in pygame.sprite.spritecollide(self, enemies, False):
+                if spr.type == 'sword' and spr.attack:
+                    self.immortal = True
+                    self.cadr2 = 0
+                    self.health -= 1
+                    if not self.health:
+                        self.kill()
+                    break
+        else:
+            self.cadr2 += 1
+            if self.cadr2 == 60:
+                self.cadr2 = 0
+                self.immortal = False
+        if abs(rast(self.rect.x, self.rect.y, px, py)) < 700:
             if abs(rast(self.rect.x, self.rect.y, px, py)) < 200:
                 k = rast(self.rect.x, self.rect.y, px, py) / self.velocity
                 a = (self.rect.x - px) / k
@@ -47,7 +64,7 @@ class FireDude(pygame.sprite.Sprite):
                 self.rect.y -= b
                 if pygame.sprite.spritecollideany(self, barrier, None):
                     self.rect.y += b * 2
-            self.attack(enemies)
+            self.attack(player)
 
     def attack(self, enemies):
         if self.cadr == 239:
@@ -71,7 +88,7 @@ class FireBullet(pygame.sprite.Sprite):
         self.a, self.b = 1, 1
         self.type = 'firebullet'
 
-    def update(self, pc, barrier, sx, sy, enemies):
+    def update(self, pc, barrier, sx, sy, enemies, sprites):
         self.cadr += 1
         if sx or sy:
             self.rect.x += sx

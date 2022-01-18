@@ -6,6 +6,7 @@ import map_generator
 from maps import fight_map
 from player import Player
 from StaticObject import Chest, Potion
+from weapon import Sword
 
 pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
@@ -22,6 +23,7 @@ cadr = 0
 chest = Chest(objects, 500, 500)
 player = Player(objects, fight_map.player_pos[0] + sdvigx, fight_map.player_pos[1] + sdvigy, 7)
 dude = fire_dude.FireDude(enemies, 1000, 500)
+sword = Sword(objects, player.rect.x, player.rect.y)
 
 
 def stop_game():
@@ -57,7 +59,7 @@ while True:
         sy -= 10
         player.sdvig(0, -10)
     for enemy in enemies:
-        enemy.update(cords, barriers, sx, sy, enemies)
+        enemy.update(cords, barriers, sx, sy, enemies, objects)
     for obj in objects:
         obj.update(objects, sx, sy, player)
     enemies.draw(screen)
