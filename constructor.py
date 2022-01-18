@@ -3,18 +3,19 @@ import sys
 import map_generator
 import string
 import time
+from maps import fight_map
 
 pygame.init()
 screen = pygame.display.set_mode((64 * 30, 64 * 16))
-layers = [[]]
-barrier = []
+layers = fight_map.layers
+barrier = fight_map.barrier
 layer = 0
 block = '.'
 clock = pygame.time.Clock()
 bar_vis = True
 map3 = map_generator.map_generator(screen, layers)
-sdvigx = sdvigy = 0
-player_pos = [32, 32]
+sdvigx, sdvigy = fight_map.sdvigx, fight_map.sdvigy
+player_pos = fight_map.player_pos
 tiles_names = {'0': 'Черный блок', 'a': 'Натертость на дороге верхний левый угол',
                'b': "Натертость на дороге верх лево", 'c': "Натертость на дорого верх право",
                'd': "Натертость на дороге верхний правый угол", 'e': "Натертость на дороге центр левый бок",

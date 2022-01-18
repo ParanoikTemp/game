@@ -14,6 +14,7 @@ class Sword(pygame.sprite.Sprite):
         self.type = "sword"
         self.attack = False
         self.cadr = 0
+        self.kills = 0
 
     def update(self, objects, sx, sy, player):
         if player.rot == 'right':

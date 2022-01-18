@@ -37,6 +37,7 @@ class FireDude(pygame.sprite.Sprite):
                     self.health -= 1
                     if not self.health:
                         self.kill()
+                        spr.kills += 1
                     break
         else:
             self.cadr2 += 1
